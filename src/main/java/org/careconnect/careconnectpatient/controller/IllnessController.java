@@ -29,7 +29,7 @@ public class IllnessController {
     public ResponseEntity<ApiResponse> postIllness(@PathVariable long patient_Id, @Valid @RequestBody PatientIllnessEntity patientIllnessEntity){
         Optional<PatientEntity> optionalPatient = patientRepo.findById(patient_Id);
         if(optionalPatient.isPresent()){
-            patientIllnessEntity.setPatient(optionalPatient.get());
+            patientIllnessEntity.setPatientId(optionalPatient.get().getPatientId());
             PatientIllnessEntity savedIllness = illnessRepo.save(patientIllnessEntity);
             ApiResponse apiResponse=new ApiResponse();
             apiResponse.setData(savedIllness);
@@ -43,7 +43,7 @@ public class IllnessController {
     public ResponseEntity<ApiResponse> illnessHistory(@PathVariable long patient_Id){
         Optional<PatientEntity> optionalPatient = patientRepo.findById(patient_Id);
         if(optionalPatient.isPresent()) {
-            List<PatientIllnessEntity> illness = illnessRepo.findByPatientPatientId(patient_Id);
+            List<PatientIllnessEntity> illness = illnessRepo.findByPatientId(patient_Id);
             if (illness.isEmpty()){
                 throw new ResourceNotFoundException("Illness","Id",String.valueOf(patient_Id));
             }

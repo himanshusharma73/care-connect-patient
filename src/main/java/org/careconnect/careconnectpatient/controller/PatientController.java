@@ -34,7 +34,7 @@ public class PatientController {
     }
 
     @GetMapping("/patients")
-    public List retrievePatients(){
+    public List<PatientEntity> retrievePatients(){
         return patientRepo.findAll();
     }
 
