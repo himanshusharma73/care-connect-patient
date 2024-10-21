@@ -1,54 +1,51 @@
 package org.careconnect.careconnectpatient.controller;
 
 import jakarta.validation.Valid;
-import org.careconnect.careconnectcommon.entity.PatientEntity;
-import org.careconnect.careconnectcommon.exception.PatientExitException;
-import org.careconnect.careconnectcommon.exception.ResourceNotFoundException;
-import org.careconnect.careconnectpatient.repositry.PatientRepo;
 import org.careconnect.careconnectcommon.response.ApiResponse;
+import org.careconnect.careconnectpatient.model.request.PatientRequest;
+import org.careconnect.careconnectpatient.model.response.PatientResponse;
+import org.careconnect.careconnectpatient.service.SavePatientService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class PatientController {
 
     @Autowired
-    PatientRepo patientRepo;
+    SavePatientService savePatientService;
+
+    private static final Logger logger = LoggerFactory.getLogger(PatientController.class);
 
     @PostMapping("/patients")
-    public ResponseEntity<ApiResponse> registerPatient(@Valid @RequestBody PatientEntity patientEntity){
-            if(patientRepo.existsByEmail(patientEntity.getEmail())){
-                throw new PatientExitException("Patient","EmailId",patientEntity.getEmail());
-            }else if(patientRepo.existsByAdharNo(patientEntity.getAdharNo())) {
-                throw new PatientExitException("Patient","Adhar Number",String.valueOf(patientEntity.getAdharNo()));
-            }else {
-                PatientEntity savedPatient=patientRepo.save(patientEntity);
-                ApiResponse apiResponse=new ApiResponse();
-                apiResponse.setData(savedPatient);
-                return ResponseEntity.ok(apiResponse);
-            }
+    public ResponseEntity<ApiResponse> registerPatient(@RequestBody @Valid PatientRequest patientRequest) {
+        logger.info("Received request to register a patient: {}", patientRequest);
+        PatientResponse patientResponse = savePatientService.savePatient(patientRequest);
+        logger.info("Patient saved successfully: {}", patientResponse);
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setData(patientResponse);
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/patients")
-    public List<PatientEntity> retrievePatients(){
-        return patientRepo.findAll();
+    public ResponseEntity<ApiResponse> retrievePatients() {
+        ApiResponse apiResponse = new ApiResponse();
+        List<PatientResponse> patientsResponse = savePatientService.getAllPatient();
+        apiResponse.setData(patientsResponse);
+        logger.info("Patients retrieved successfully: {}", patientsResponse);
+        return ResponseEntity.ok(apiResponse);
     }
 
     @GetMapping("/patients/{patientId}")
     public ResponseEntity<ApiResponse> retrievePatientById(@PathVariable Long patientId) {
-        Optional<PatientEntity> optionalPatient = patientRepo.findById(patientId);
-        if (optionalPatient.isPresent()){
-            PatientEntity patientEntity=optionalPatient.get();
-            ApiResponse apiResponse=new ApiResponse();
-            apiResponse.setData(patientEntity);
-            return ResponseEntity.ok(apiResponse);
-        }
-        else {
-            throw new ResourceNotFoundException("Patient","Id",String.valueOf(patientId));
-        }
+        ApiResponse apiResponse = new ApiResponse();
+        PatientResponse patient = savePatientService.getPatientById(patientId);
+        apiResponse.setData(patient);
+        logger.info("Patient retrieved successfully By id:{} -> : {}", patientId, patient);
+        return ResponseEntity.ok(apiResponse);
     }
 }
