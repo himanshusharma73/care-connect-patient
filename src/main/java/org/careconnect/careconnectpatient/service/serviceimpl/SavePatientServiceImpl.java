@@ -1,6 +1,7 @@
 package org.careconnect.careconnectpatient.service.serviceimpl;
 
 import org.careconnect.careconnectcommon.entity.PatientEntity;
+import org.careconnect.careconnectcommon.exception.DuplicateResourceException;
 import org.careconnect.careconnectcommon.exception.ResourceNotFoundException;
 import org.careconnect.careconnectcommon.versoning.Address;
 import org.careconnect.careconnectcommon.versoning.Name;
@@ -24,9 +25,9 @@ public class SavePatientServiceImpl implements SavePatientService {
     @Override
     public PatientResponse savePatient(PatientRequest patientRequest) {
         if(patientRepo.existsByEmail(patientRequest.getEmail())){
-            throw new ResourceNotFoundException("Patient","EmailId", patientRequest.getEmail());
+            throw new DuplicateResourceException("Patient already exit with  EmailId: "+ patientRequest.getEmail());
         }else if(patientRepo.existsByAdharNo(patientRequest.getAdharNo())) {
-            throw new ResourceNotFoundException("Patient","Adhar Number",String.valueOf(patientRequest.getAdharNo()));
+            throw new DuplicateResourceException("Patient already exit with Adhar Number: "+ patientRequest.getAdharNo());
         }else {
             PatientEntity patientEntity = toPatientEntity(patientRequest);
             PatientEntity savedPatient=patientRepo.save(patientEntity);
