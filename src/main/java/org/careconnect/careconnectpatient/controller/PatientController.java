@@ -23,7 +23,7 @@ public class PatientController {
 
     @PostMapping("/patients")
     public ResponseEntity<ApiResponse> registerPatient(@RequestBody @Valid PatientRequest patientRequest) {
-        logger.info("Received request to register a patient: {}", patientRequest);
+        logger.info("Request received to register a patient: {}", patientRequest);
         PatientResponse patientResponse = savePatientService.savePatient(patientRequest);
         logger.info("Patient saved successfully: {}", patientResponse);
         ApiResponse apiResponse = new ApiResponse();
@@ -46,6 +46,16 @@ public class PatientController {
         PatientResponse patient = savePatientService.getPatientById(patientId);
         apiResponse.setData(patient);
         logger.info("Patient retrieved successfully By id:{} -> : {}", patientId, patient);
+        return ResponseEntity.ok(apiResponse);
+    }
+
+    @PutMapping("/patients/{patientId}")
+    public ResponseEntity<ApiResponse> updatePatient(@PathVariable int patientId, @RequestBody @Valid PatientRequest patientRequest) {
+        logger.info("Request received to update a patient, patient id: {} request: {}",patientId, patientRequest);
+        PatientResponse patientResponse = savePatientService.updatePatient(patientId,patientRequest);
+        logger.info("Patient updated successfully: {}", patientResponse);
+        ApiResponse apiResponse = new ApiResponse();
+        apiResponse.setData(patientResponse);
         return ResponseEntity.ok(apiResponse);
     }
 }

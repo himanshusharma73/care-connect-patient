@@ -33,8 +33,7 @@ public class IllnessServiceImpl implements IllnessService {
         logger.info("Illness request received {} : ", illnessRequest);
         Optional<PatientEntity> optionalPatient = patientRepo.findById(patientId);
         if (optionalPatient.isPresent()) {
-            illnessRequest.setPatientId(optionalPatient.get().getPatientId());
-            PatientIllnessEntity patientillnessEntity = toPatientillnessEntity(illnessRequest);
+            PatientIllnessEntity patientillnessEntity = toPatientillnessEntity(patientId, illnessRequest);
             PatientIllnessEntity savedIllness = illnessRepo.save(patientillnessEntity);
             IllnessResponse illnessResponse = toIllnessResponse(savedIllness);
             logger.info("Illness response {} : ", illnessResponse);
@@ -67,9 +66,9 @@ public class IllnessServiceImpl implements IllnessService {
     }
 
 
-    PatientIllnessEntity toPatientillnessEntity(IllnessRequest illnessRequest) {
+    PatientIllnessEntity toPatientillnessEntity(long patientId, IllnessRequest illnessRequest) {
         PatientIllnessEntity illnessEntity = new PatientIllnessEntity();
-        illnessEntity.setPatientId(illnessRequest.getPatientId());
+        illnessEntity.setPatientId(patientId);
         illnessEntity.setIllnessId(illnessRequest.getIllnessId());
         illnessEntity.setIllness(illnessRequest.getIllness());
         illnessEntity.setDescription(illnessRequest.getDescription());

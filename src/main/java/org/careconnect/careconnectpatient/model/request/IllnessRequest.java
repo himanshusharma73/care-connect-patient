@@ -15,8 +15,6 @@ public class IllnessRequest {
 
     private long illnessId;
 
-    private long patientId;
-
     @NotNull(message = "Illness list must not be null")
     @NotEmpty(message = "Illness list must not be empty")
     private List<String> illness;

@@ -11,10 +11,8 @@ import org.careconnect.careconnectcommon.common.Name;
 import java.time.LocalDate;
 
 @Data
-@JsonIgnoreProperties
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PatientRequest {
-
-    private long patientId;
 
     @Valid
     private Name name;

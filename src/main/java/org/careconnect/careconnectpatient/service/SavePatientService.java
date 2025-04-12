@@ -9,6 +9,7 @@ import java.util.List;
 @Component
 public interface SavePatientService {
     PatientResponse savePatient(PatientRequest patientRequest);
+    PatientResponse updatePatient(int patientId, PatientRequest patientRequest);
 
     List<PatientResponse> getAllPatient();
 

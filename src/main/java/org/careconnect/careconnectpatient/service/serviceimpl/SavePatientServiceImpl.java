@@ -36,6 +36,15 @@ public class SavePatientServiceImpl implements SavePatientService {
     }
 
     @Override
+    public PatientResponse updatePatient(int patientId, PatientRequest patientRequest) {
+            PatientEntity patientEntity = toPatientEntity(patientRequest);
+            patientEntity.setPatientId(patientId);
+            PatientEntity savedPatient=patientRepo.save(patientEntity);
+            return toPatientResponse(savedPatient);
+
+    }
+
+    @Override
     public List<PatientResponse> getAllPatient() {
         List<PatientEntity> patientEntities = patientRepo.findAll();
         List<PatientResponse> patientResponses = new ArrayList<>();
@@ -85,7 +94,6 @@ public class SavePatientServiceImpl implements SavePatientService {
     public PatientEntity toPatientEntity(PatientRequest patientRequest) {
         PatientEntity patientEntity = new PatientEntity();
 
-        patientEntity.setPatientId(patientRequest.getPatientId());
         patientEntity.setName(getName(patientRequest));
         patientEntity.setBirthdate(patientRequest.getBirthdate());
         patientEntity.setGender(patientRequest.getGender());
