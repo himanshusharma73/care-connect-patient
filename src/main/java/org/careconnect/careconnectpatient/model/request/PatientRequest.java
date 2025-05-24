@@ -30,14 +30,12 @@ public class PatientRequest {
     private String email;
 
     @Column(unique = true)
-    @Min(value = 1000000000l,message = "Mobile number must be at least 10 digit")
-    @Max(value = 9999999999l,message = "Mobile number must not exceed 10 digit")
     private long mobileNo;
 
 
     @Column(unique = true)
-    @Min(value = 100000000000l,message = "Enter correct Adhar number")
-    @Max(value = 999999999999l,message = "Enter correct Adhar number")
+    @Min(value = 100000000000L,message = "Enter correct Adhar number")
+    @Max(value = 999999999999L,message = "Enter correct Adhar number")
     private long adharNo;
 
     @Valid
@@ -52,8 +50,6 @@ public class PatientRequest {
     @NotBlank(message = "Enter Occupation")
     private String occupation;
 
-    @Min(value = 1000000000l,message = "Mobile number must be at least 10 digit")
-    @Max(value = 9999999999l,message = "Mobile number must not exceed 10 digit")
     private long emergencyContactNumber;
 
     @NotNull(message = "Enter smoking status")
@@ -62,7 +58,7 @@ public class PatientRequest {
     @NotNull(message = "Enter Alcoholic status")
     private Boolean isAlcoholic;
 
-    @NotBlank(message = "Enter Preferred Language")
+    //@NotBlank(message = "Enter Preferred Language")
     private String preferredLanguage;
 
     @NotNull(message = "Enter Insurance status")

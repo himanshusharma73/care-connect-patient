@@ -47,22 +47,24 @@ public class IllnessServiceImpl implements IllnessService {
     @Override
     public List<IllnessResponse> getIllnessHistory(long patientId) {
         Optional<PatientEntity> optionalPatient = patientRepo.findById(patientId);
-        if (optionalPatient.isPresent()) {
-            List<PatientIllnessEntity> illness = illnessRepo.findByPatientId(patientId);
-            if (illness.isEmpty()) {
-                throw new ResourceNotFoundException("Illness", "Id", String.valueOf(patientId));
-            } else {
-                logger.info("Illness found with patientId {}, illness {}",patientId, illness);
-                List<IllnessResponse> illnessResponses = new ArrayList<>();
-                for (PatientIllnessEntity illnessEntity : illness) {
-                    IllnessResponse illnessResponse = toIllnessResponse(illnessEntity);
-                    illnessResponses.add(illnessResponse);
-                }
-                return illnessResponses;
-            }
-        } else {
+        if (optionalPatient.isEmpty()) {
             throw new ResourceNotFoundException("Patient", "Id", String.valueOf(patientId));
         }
+
+        List<PatientIllnessEntity> illness = illnessRepo.findByPatientId(patientId);
+        if (illness.isEmpty()) {
+            logger.info("Illness not present for patient, id {}", patientId);
+        }
+        else {
+            logger.info("Illness found with patientId {}, illness {}", patientId, illness);
+        }
+        List<IllnessResponse> illnessResponses = new ArrayList<>();
+        for (PatientIllnessEntity illnessEntity : illness) {
+            IllnessResponse illnessResponse = toIllnessResponse(illnessEntity);
+            illnessResponses.add(illnessResponse);
+        }
+        return illnessResponses;
+
     }
 
 
